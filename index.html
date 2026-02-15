@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDCat – Deploy Without Fear</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --text: #ffffff;
+            --text-dim: #666666;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --grid: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --problem-bg: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, transparent 100%);
+            --problem-border: rgba(255, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text: #000000;
+            --text-dim: #666666;
+            --accent: #00aa5e;
+            --accent-dim: rgba(0, 170, 94, 0.1);
+            --grid: rgba(0, 0, 0, 0.03);
+            --border: rgba(0, 0, 0, 0.1);
+            --card-bg: rgba(0, 0, 0, 0.02);
+            --problem-bg: linear-gradient(135deg, rgba(255, 0, 0, 0.05) 0%, transparent 100%);
+            --problem-border: rgba(255, 0, 0, 0.15);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'SF Mono', 'Courier New', monospace;
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* GRID BACKGROUND */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HEADER */
+        header {
+            padding: 60px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* THEME TOGGLE */
+        .theme-toggle {
+            position: fixed;
+            top: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: rotate(180deg);
+        }
+
+        .theme-toggle:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+
+        .logo {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 60px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        /* SECTION */
+        section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-intro {
+            font-size: 16px;
+            color: var(--text-dim);
+            margin-bottom: 60px;
+            max-width: 700px;
+        }
+
+        /* THE PROBLEM */
+        .problem-stat {
+            background: var(--problem-bg);
+            border: 1px solid var(--problem-border);
+            padding: 48px;
+            border-radius: 4px;
+            margin-bottom: 32px;
+        }
+
+        .big-number {
+            font-size: 64px;
+            font-weight: 700;
+            color: #ff3333;
+            margin-bottom: 16px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .problem-stat p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        /* DATA FLOW */
+        .flow {
+            margin: 60px 0;
+        }
+
+        .flow-step {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 24px;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .flow-step:nth-child(1) { animation-delay: 0.1s; }
+        .flow-step:nth-child(2) { animation-delay: 0.2s; }
+        .flow-step:nth-child(3) { animation-delay: 0.3s; }
+        .flow-step:nth-child(4) { animation-delay: 0.4s; }
+        .flow-step:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flow-number {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .flow-step:not(:last-child) .flow-number::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 48px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+        }
+
+        .flow-content h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .flow-content p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        .flow-tech {
+            display: inline-block;
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        /* CONCEPT CARDS */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .concept-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 32px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .concept-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .concept-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .concept-card p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        /* TECH STACK */
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .tech-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .tech-label {
+            color: var(--text-dim);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .tech-value {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* WHY SECTION */
+        .why-content {
+            max-width: 700px;
+            margin: 40px 0;
+        }
+
+        .why-content p {
+            font-size: 16px;
+            line-height: 1.9;
+            margin-bottom: 24px;
+            color: var(--text-dim);
+        }
+
+        .highlight {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        footer p {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 36px; }
+            h2 { font-size: 28px; }
+            .big-number { font-size: 48px; }
+            .flow-step { grid-template-columns: 1fr; }
+            .flow-number::after { display: none; }
+            
+            .theme-toggle {
+                top: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">CDCAT_</div>
+            <h1>Deploy Without Fear.</h1>
+            <p class="subtitle">
+                A deployment platform built on radical transparency. 
+                Flat pricing. Zero egress fees. No surprise bills.
+            </p>
+        </header>
+
+        <!-- THE PROBLEM -->
+        <section>
+            <h2>The Problem</h2>
+            <p class="section-intro">
+                Current platforms punish success. When your project goes viral, your bill explodes.
+            </p>
+
+            <div class="problem-stat">
+                <div class="big-number">$46,485</div>
+                <p>
+                    Real bill from Vercel for one month of traffic. A simple static site went viral. 
+                    The developer had to shut it down.
+                    <br><br>
+                    Why? Platforms charge $40-150 per 100GB of bandwidth. 
+                    A single HackerNews frontpage = bankruptcy.
+                </p>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section>
+            <h2>How It Works</h2>
+            <p class="section-intro">
+                Simple architecture. No magic. No vendor lock-in.
+            </p>
+
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h3>Connect GitHub</h3>
+                        <p>
+                            Push to your repo or paste the URL. 
+                            We auto-detect your framework (React, Vue, Next.js, Astro).
+                        </p>
+                        <span class="flow-tech">GitHub Webhooks</span>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h3>Isolated Build</h3>
+                        <p>
+                            Each build runs in a dedicated Docker container on our VPS. 
+                            Your code can't touch anyone else's. Container self-destructs after build.
+                        </p>
+                        <span class="flow-tech">Docker</span>
+                        <span class="flow-tech">VPS</span>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h3>Upload to R2</h3>
+                        <p>
+                            Built files are uploaded to Cloudflare R2 storage. 
+                            No egress fees. Ever. This is the key to flat pricing.
+                        </p>
+                        <span class="flow-tech">Cloudflare R2</span>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h3>Global Distribution</h3>
+                        <p>
+                            Cloudflare Workers serve your site from 300+ edge locations worldwide. 
+                            Sub-50ms latency anywhere.
+                        </p>
+                        <span class="flow-tech">Cloudflare Workers</span>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <h3>Sleep Well</h3>
+                        <p>
+                            Go viral. Get DDoS'd. Hit HN frontpage. Your bill stays exactly what you signed up for.
+                            No bandwidth charges. No compute charges. Flat rate.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE CONCEPTS -->
+        <section>
+            <h2>Core Concepts</h2>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">🔒</div>
+                    <h3>Isolation</h3>
+                    <p>
+                        Every build gets a fresh Docker container. 
+                        No shared state. No pollution. Your code can't crash someone else's build.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">💰</div>
+                    <h3>Flat Pricing</h3>
+                    <p>
+                        Fixed monthly rate. No bandwidth charges. No compute charges. 
+                        Success doesn't cost extra.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">🌍</div>
+                    <h3>Zero Egress</h3>
+                    <p>
+                        Cloudflare R2 charges $0 for data transfer out. 
+                        This is how we avoid the bandwidth trap.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">⚡</div>
+                    <h3>Edge Native</h3>
+                    <p>
+                        Files served from Cloudflare's global network. 
+                        Fast everywhere. No origin servers to manage.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">🔓</div>
+                    <h3>No Lock-In</h3>
+                    <p>
+                        Your files are in R2 storage. S3-compatible API. 
+                        You can leave anytime with one API call.
+                    </p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-icon">📊</div>
+                    <h3>Transparent</h3>
+                    <p>
+                        See exactly what you're paying for. Build times. Storage used. Requests served. 
+                        No hidden metrics.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TECH STACK -->
+        <section>
+            <h2>Tech Stack</h2>
+            <p class="section-intro">
+                Built with boring, reliable technology. No hype. Just tools that work.
+            </p>
+
+            <div class="tech-list">
+                <div class="tech-item">
+                    <div class="tech-label">Backend</div>
+                    <div class="tech-value">Go</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Build Isolation</div>
+                    <div class="tech-value">Docker</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Storage</div>
+                    <div class="tech-value">Cloudflare R2</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">CDN</div>
+                    <div class="tech-value">Cloudflare Workers</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Infrastructure</div>
+                    <div class="tech-value">VPS</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Database</div>
+                    <div class="tech-value">SQLite → Postgres</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY WE'RE BUILDING THIS -->
+        <section>
+            <h2>Why We're Building This</h2>
+
+            <div class="why-content">
+                <p>
+                    Platforms like Vercel are <span class="highlight">amazing for prototypes</span>. 
+                    Generous free tiers. One-click deploys. They made frontend deployment accessible.
+                </p>
+
+                <p>
+                    But they're built on a <span class="highlight">bandwidth trap</span>. 
+                    They hook you with free deployments, then charge exponentially when you scale. 
+                    Success becomes punishment.
+                </p>
+
+                <p>
+                    <span class="highlight">We're indie developers too.</span> 
+                    We've been burned by surprise bills. We've seen projects shut down because of traffic spikes. 
+                    We've watched developers choose between going viral and going bankrupt.
+                </p>
+
+                <p>
+                    <span class="highlight">CDCat exists to fix this.</span> 
+                    Deploy static sites, React apps, or Next.js exports without worrying about your next bill. 
+                    Flat pricing. No hidden fees. No egress charges.
+                </p>
+
+                <p>
+                    Built in public. Powered by Cloudflare. 
+                    <span class="highlight">Designed for developers who want to build, not manage infrastructure.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-status">
+                <span class="status-dot"></span>
+                <span>Building in public</span>
+            </div>
+            <p>Day 4 of development. Launch Q2 2026.</p>
+            <p style="margin-top: 16px;">
+                Built by <a href="https://x.com/vibecotan" target="_blank" rel="noopener noreferrer">@vibecotan</a>
+            </p>
+            <p style="margin-top: 8px; font-size: 11px;">
+                A developer who got burned by cloud bills.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        themeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+        });
+
+        // Smooth scroll reveal for flow steps
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.flow-step').forEach(step => {
+            step.style.opacity = '0';
+            observer.observe(step);
+        });
+    </script>
+</body>
+</html>
