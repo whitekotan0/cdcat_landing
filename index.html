@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDCat – Deploy Without Fear</title>
     <style>
+        /* RESET & VARIABLES */
         * {
             margin: 0;
             padding: 0;
@@ -70,13 +71,6 @@
             z-index: 1;
         }
 
-        /* HEADER */
-        header {
-            padding: 60px 0 120px;
-            text-align: center;
-            position: relative;
-        }
-
         /* THEME TOGGLE */
         .theme-toggle {
             position: fixed;
@@ -102,16 +96,20 @@
             transform: rotate(180deg);
         }
 
-        .theme-toggle:active {
-            transform: rotate(180deg) scale(0.95);
+        /* HEADER */
+        header {
+            padding: 60px 0 120px;
+            text-align: center;
+            position: relative;
         }
 
         .logo {
-            font-size: 14px;
-            letter-spacing: 2px;
+            font-size: 24px;
+            letter-spacing: 4px;
             color: var(--accent);
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             font-weight: 700;
+            text-transform: uppercase;
         }
 
         h1 {
@@ -129,7 +127,7 @@
             margin: 0 auto 60px;
         }
 
-        /* SECTION */
+        /* SECTIONS GENERAL */
         section {
             padding: 80px 0;
             border-top: 1px solid var(--border);
@@ -165,13 +163,7 @@
             font-family: -apple-system, sans-serif;
         }
 
-        .problem-stat p {
-            font-size: 14px;
-            color: var(--text-dim);
-            line-height: 1.8;
-        }
-
-        /* DATA FLOW */
+        /* HOW IT WORKS (FLOW) */
         .flow {
             margin: 60px 0;
         }
@@ -182,24 +174,8 @@
             gap: 24px;
             margin-bottom: 48px;
             opacity: 0;
-            animation: fadeInUp 0.6s forwards;
-        }
-
-        .flow-step:nth-child(1) { animation-delay: 0.1s; }
-        .flow-step:nth-child(2) { animation-delay: 0.2s; }
-        .flow-step:nth-child(3) { animation-delay: 0.3s; }
-        .flow-step:nth-child(4) { animation-delay: 0.4s; }
-        .flow-step:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            transform: translateY(20px);
         }
 
         .flow-number {
@@ -227,17 +203,8 @@
             background: linear-gradient(to bottom, var(--accent), transparent);
         }
 
-        .flow-content h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: var(--text);
-        }
-
-        .flow-content p {
-            font-size: 14px;
-            color: var(--text-dim);
-            line-height: 1.8;
-        }
+        .flow-content h3 { font-size: 20px; margin-bottom: 12px; }
+        .flow-content p { font-size: 14px; color: var(--text-dim); }
 
         .flow-tech {
             display: inline-block;
@@ -250,12 +217,11 @@
             border: 1px solid rgba(0, 255, 136, 0.2);
         }
 
-        /* CONCEPT CARDS */
+        /* CONCEPTS GRID */
         .concept-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
-            margin-top: 40px;
         }
 
         .concept-card {
@@ -271,28 +237,13 @@
             background: rgba(0, 255, 136, 0.05);
         }
 
-        .concept-icon {
-            font-size: 32px;
-            margin-bottom: 16px;
-        }
-
-        .concept-card h3 {
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .concept-card p {
-            font-size: 14px;
-            color: var(--text-dim);
-            line-height: 1.7;
-        }
+        .concept-icon { font-size: 32px; margin-bottom: 16px; }
 
         /* TECH STACK */
         .tech-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
-            margin-top: 40px;
         }
 
         .tech-item {
@@ -300,39 +251,15 @@
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 4px;
-            font-size: 14px;
         }
 
-        .tech-label {
-            color: var(--text-dim);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .tech-value {
-            color: var(--accent);
-            font-weight: 700;
-        }
+        .tech-label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; margin-bottom: 8px; }
+        .tech-value { color: var(--accent); font-weight: 700; }
 
         /* WHY SECTION */
-        .why-content {
-            max-width: 700px;
-            margin: 40px 0;
-        }
-
-        .why-content p {
-            font-size: 16px;
-            line-height: 1.9;
-            margin-bottom: 24px;
-            color: var(--text-dim);
-        }
-
-        .highlight {
-            color: var(--text);
-            font-weight: 700;
-        }
+        .why-content { max-width: 740px; }
+        .why-content p { font-size: 16px; margin-bottom: 24px; color: var(--text-dim); }
+        .highlight { color: var(--text); font-weight: 700; }
 
         /* FOOTER */
         footer {
@@ -357,56 +284,28 @@
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        footer p {
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
-        footer a:hover {
-            opacity: 0.7;
-            text-decoration: underline;
-        }
+        footer a { color: var(--accent); text-decoration: none; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
             h1 { font-size: 36px; }
-            h2 { font-size: 28px; }
-            .big-number { font-size: 48px; }
             .flow-step { grid-template-columns: 1fr; }
             .flow-number::after { display: none; }
-            
-            .theme-toggle {
-                top: 20px;
-                right: 20px;
-                width: 44px;
-                height: 44px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="grid-bg"></div>
 
-    <!-- THEME TOGGLE -->
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <span id="themeIcon">🌙</span>
     </button>
 
     <div class="container">
-        <!-- HEADER -->
         <header>
-            <div class="logo">CDCAT_</div>
+            <div class="logo">CDCAT</div>
             <h1>Deploy Without Fear.</h1>
             <p class="subtitle">
                 A deployment platform built on radical transparency. 
@@ -414,41 +313,32 @@
             </p>
         </header>
 
-        <!-- THE PROBLEM -->
         <section>
             <h2>The Problem</h2>
             <p class="section-intro">
-                Current platforms punish success. When your project goes viral, your bill explodes.
+                Current platforms punish success. When your project goes viral, your wallet takes the hit.
             </p>
 
             <div class="problem-stat">
                 <div class="big-number">$46,485</div>
                 <p>
-                    Real bill from Vercel for one month of traffic. A simple static site went viral. 
-                    The developer had to shut it down.
+                    A real bill from Vercel for one month of traffic for a simple static site. 
+                    The developer had to shut it down immediately.
                     <br><br>
-                    Why? Platforms charge $40-150 per 100GB of bandwidth. 
-                    A single HackerNews frontpage = bankruptcy.
+                    Why? Platforms charge $40–150 per every 100GB of bandwidth. 
+                    One front-page appearance on HackerNews can lead to bankruptcy.
                 </p>
             </div>
         </section>
 
-        <!-- HOW IT WORKS -->
         <section>
             <h2>How It Works</h2>
-            <p class="section-intro">
-                Simple architecture. No magic. No vendor lock-in.
-            </p>
-
             <div class="flow">
                 <div class="flow-step">
                     <div class="flow-number">1</div>
                     <div class="flow-content">
                         <h3>Connect GitHub</h3>
-                        <p>
-                            Push to your repo or paste the URL. 
-                            We auto-detect your framework (React, Vue, Next.js, Astro).
-                        </p>
+                        <p>Push to your repo or paste the URL. We auto-detect your framework (React, Vue, Next.js, Astro).</p>
                         <span class="flow-tech">GitHub Webhooks</span>
                     </div>
                 </div>
@@ -457,12 +347,9 @@
                     <div class="flow-number">2</div>
                     <div class="flow-content">
                         <h3>Isolated Build</h3>
-                        <p>
-                            Each build runs in a dedicated Docker container on our VPS. 
-                            Your code can't touch anyone else's. Container self-destructs after build.
-                        </p>
+                        <p>Each build runs in a dedicated Docker container on our VPS. Your code never touches anyone else's state.</p>
                         <span class="flow-tech">Docker</span>
-                        <span class="flow-tech">VPS</span>
+                        <span class="flow-tech">VPS Isolation</span>
                     </div>
                 </div>
 
@@ -470,10 +357,7 @@
                     <div class="flow-number">3</div>
                     <div class="flow-content">
                         <h3>Upload to R2</h3>
-                        <p>
-                            Built files are uploaded to Cloudflare R2 storage. 
-                            No egress fees. Ever. This is the key to flat pricing.
-                        </p>
+                        <p>Built files are uploaded to Cloudflare R2. $0 egress fees is the key to our flat pricing model.</p>
                         <span class="flow-tech">Cloudflare R2</span>
                     </div>
                 </div>
@@ -481,160 +365,79 @@
                 <div class="flow-step">
                     <div class="flow-number">4</div>
                     <div class="flow-content">
-                        <h3>Global Distribution</h3>
-                        <p>
-                            Cloudflare Workers serve your site from 300+ edge locations worldwide. 
-                            Sub-50ms latency anywhere.
-                        </p>
-                        <span class="flow-tech">Cloudflare Workers</span>
+                        <h3>Edge Serving</h3>
+                        <p>Your site is served via Cloudflare Workers from 300+ edge locations. Sub-50ms latency globally.</p>
+                        <span class="flow-tech">Edge Workers</span>
                     </div>
                 </div>
 
                 <div class="flow-step">
                     <div class="flow-number">5</div>
                     <div class="flow-content">
-                        <h3>Sleep Well</h3>
-                        <p>
-                            Go viral. Get DDoS'd. Hit HN frontpage. Your bill stays exactly what you signed up for.
-                            No bandwidth charges. No compute charges. Flat rate.
-                        </p>
+                        <h3>Sleep Peacefully</h3>
+                        <p>Bandwidth is free. Your bill remains exactly what you signed up for, even if you hit the front page of Product Hunt.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- CORE CONCEPTS -->
         <section>
             <h2>Core Concepts</h2>
-
             <div class="concept-grid">
                 <div class="concept-card">
                     <div class="concept-icon">🔒</div>
                     <h3>Isolation</h3>
-                    <p>
-                        Every build gets a fresh Docker container. 
-                        No shared state. No pollution. Your code can't crash someone else's build.
-                    </p>
+                    <p>No shared state. A fresh, ephemeral container for every single build.</p>
                 </div>
-
                 <div class="concept-card">
                     <div class="concept-icon">💰</div>
                     <h3>Flat Pricing</h3>
-                    <p>
-                        Fixed monthly rate. No bandwidth charges. No compute charges. 
-                        Success doesn't cost extra.
-                    </p>
+                    <p>No hidden metrics. You pay a fixed monthly amount. Success doesn't cost extra.</p>
                 </div>
-
                 <div class="concept-card">
                     <div class="concept-icon">🌍</div>
                     <h3>Zero Egress</h3>
-                    <p>
-                        Cloudflare R2 charges $0 for data transfer out. 
-                        This is how we avoid the bandwidth trap.
-                    </p>
+                    <p>Cloudflare R2 doesn't charge for data transfer out. We pass that savings to you.</p>
                 </div>
-
                 <div class="concept-card">
                     <div class="concept-icon">⚡</div>
                     <h3>Edge Native</h3>
-                    <p>
-                        Files served from Cloudflare's global network. 
-                        Fast everywhere. No origin servers to manage.
-                    </p>
+                    <p>Your site lives at the edge of the network, as close to your users as possible.</p>
                 </div>
-
                 <div class="concept-card">
                     <div class="concept-icon">🔓</div>
                     <h3>No Lock-In</h3>
-                    <p>
-                        Your files are in R2 storage. S3-compatible API. 
-                        You can leave anytime with one API call.
-                    </p>
+                    <p>Data stays in S3-compatible storage. You can migrate away with a single API call.</p>
                 </div>
-
                 <div class="concept-card">
                     <div class="concept-icon">📊</div>
                     <h3>Transparent</h3>
-                    <p>
-                        See exactly what you're paying for. Build times. Storage used. Requests served. 
-                        No hidden metrics.
-                    </p>
+                    <p>Open-source core with honest statistics for every build and request.</p>
                 </div>
             </div>
         </section>
 
-        <!-- TECH STACK -->
         <section>
             <h2>Tech Stack</h2>
-            <p class="section-intro">
-                Built with boring, reliable technology. No hype. Just tools that work.
-            </p>
-
             <div class="tech-list">
-                <div class="tech-item">
-                    <div class="tech-label">Backend</div>
-                    <div class="tech-value">Go</div>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-label">Build Isolation</div>
-                    <div class="tech-value">Docker</div>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-label">Storage</div>
-                    <div class="tech-value">Cloudflare R2</div>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-label">CDN</div>
-                    <div class="tech-value">Cloudflare Workers</div>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-label">Infrastructure</div>
-                    <div class="tech-value">VPS</div>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-label">Database</div>
-                    <div class="tech-value">SQLite → Postgres</div>
-                </div>
+                <div class="tech-item"><div class="tech-label">Backend</div><div class="tech-value">Go (Golang)</div></div>
+                <div class="tech-item"><div class="tech-label">Runner</div><div class="tech-value">Docker</div></div>
+                <div class="tech-item"><div class="tech-label">Storage</div><div class="tech-value">Cloudflare R2</div></div>
+                <div class="tech-item"><div class="tech-label">Network</div><div class="tech-value">Workers / CDN</div></div>
+                <div class="tech-item"><div class="tech-label">Database</div><div class="tech-value">PostgreSQL</div></div>
+                <div class="tech-item"><div class="tech-label">Infra</div><div class="tech-value">Bare Metal VPS</div></div>
             </div>
         </section>
 
-        <!-- WHY WE'RE BUILDING THIS -->
         <section>
-            <h2>Why We're Building This</h2>
-
+            <h2>Why CDCat?</h2>
             <div class="why-content">
-                <p>
-                    Platforms like Vercel are <span class="highlight">amazing for prototypes</span>. 
-                    Generous free tiers. One-click deploys. They made frontend deployment accessible.
-                </p>
-
-                <p>
-                    But they're built on a <span class="highlight">bandwidth trap</span>. 
-                    They hook you with free deployments, then charge exponentially when you scale. 
-                    Success becomes punishment.
-                </p>
-
-                <p>
-                    <span class="highlight">We're indie developers too.</span> 
-                    We've been burned by surprise bills. We've seen projects shut down because of traffic spikes. 
-                    We've watched developers choose between going viral and going bankrupt.
-                </p>
-
-                <p>
-                    <span class="highlight">CDCat exists to fix this.</span> 
-                    Deploy static sites, React apps, or Next.js exports without worrying about your next bill. 
-                    Flat pricing. No hidden fees. No egress charges.
-                </p>
-
-                <p>
-                    Built in public. Powered by Cloudflare. 
-                    <span class="highlight">Designed for developers who want to build, not manage infrastructure.</span>
-                </p>
+                <p>Platforms like Vercel and Netlify are <span class="highlight">fantastic for prototypes</span>. But they are built on a <span class="highlight">"bandwidth trap"</span>: they hook you with a free tier and then charge exponentially when you scale.</p>
+                <p><span class="highlight">We are indie developers too.</span> We've seen projects die because of surprise bills. CDCat exists so you can focus on building, not worrying about viral success.</p>
+                <p>No hidden fees. Just code and stability. Built on boring, reliable, and high-performance technologies.</p>
             </div>
         </section>
 
-        <!-- FOOTER -->
         <footer>
             <div class="footer-status">
                 <span class="status-dot"></span>
@@ -642,52 +445,42 @@
             </div>
             <p>Day 4 of development. Launch Q2 2026.</p>
             <p style="margin-top: 16px;">
-                Built by <a href="https://x.com/vibecotan" target="_blank" rel="noopener noreferrer">@vibecotan</a>
-            </p>
-            <p style="margin-top: 8px; font-size: 11px;">
-                A developer who got burned by cloud bills.
+                Built by <a href="https://x.com/vibecotan" target="_blank">@vibecotan</a>
             </p>
         </footer>
     </div>
 
     <script>
-        // Theme toggle
+        // THEME LOGIC
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const html = document.documentElement;
 
-        // Check for saved theme preference or default to 'light'
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', currentTheme);
-        themeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-        });
-
-        // Smooth scroll reveal for flow steps
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
+        const setTheme = (theme) => {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
         };
 
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // SCROLL ANIMATION
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        document.querySelectorAll('.flow-step').forEach(step => {
-            step.style.opacity = '0';
-            observer.observe(step);
-        });
+        document.querySelectorAll('.flow-step').forEach(step => observer.observe(step));
     </script>
 </body>
 </html>
