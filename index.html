@@ -4,483 +4,827 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDCat – Deploy Without Fear</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* RESET & VARIABLES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #000000;
-            --text: #ffffff;
-            --text-dim: #666666;
-            --accent: #00ff88;
-            --accent-dim: rgba(0, 255, 136, 0.1);
-            --grid: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --problem-bg: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, transparent 100%);
-            --problem-border: rgba(255, 0, 0, 0.2);
+            --bg: #0a1f24;
+            --bg-mid: #0d2830;
+            --surface: #0f2e36;
+            --surface-2: #163844;
+            --surface-3: #1c4250;
+            --border: rgba(82,185,185,0.12);
+            --border-strong: rgba(82,185,185,0.24);
+            --text: #e0f2f2;
+            --text-secondary: #7ababa;
+            --text-tertiary: #3d7a82;
+            --accent: #3ec6c6;
+            --accent-hover: #52d9d9;
+            --accent-dim: rgba(62,198,198,0.1);
+            --accent-deep: #1a9090;
+            --green: #3ec6a0;
+            --red: #e05c5c;
+            --red-surface: rgba(224,92,92,0.08);
         }
 
         [data-theme="light"] {
-            --bg: #ffffff;
-            --text: #000000;
-            --text-dim: #666666;
-            --accent: #00aa5e;
-            --accent-dim: rgba(0, 170, 94, 0.1);
-            --grid: rgba(0, 0, 0, 0.03);
-            --border: rgba(0, 0, 0, 0.1);
-            --card-bg: rgba(0, 0, 0, 0.02);
-            --problem-bg: linear-gradient(135deg, rgba(255, 0, 0, 0.05) 0%, transparent 100%);
-            --problem-border: rgba(255, 0, 0, 0.15);
+            --bg: #e8f5f5;
+            --bg-mid: #d6eeee;
+            --surface: #ffffff;
+            --surface-2: #eef8f8;
+            --surface-3: #d6eeee;
+            --border: rgba(20,110,120,0.12);
+            --border-strong: rgba(20,110,120,0.24);
+            --text: #092830;
+            --text-secondary: #2a7a82;
+            --text-tertiary: #6aacb4;
+            --accent: #0a9090;
+            --accent-hover: #0c7878;
+            --accent-dim: rgba(10,144,144,0.08);
+            --accent-deep: #065858;
+            --green: #0a9070;
+            --red: #c04040;
+            --red-surface: rgba(192,64,64,0.06);
         }
 
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'SF Mono', 'Courier New', monospace;
-            line-height: 1.7;
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* GRID BACKGROUND */
-        .grid-bg {
+        /* NAV */
+        nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(var(--grid) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* CONTAINER */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* THEME TOGGLE */
-        .theme-toggle {
-            position: fixed;
-            top: 32px;
-            right: 32px;
-            width: 48px;
-            height: 48px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            border-radius: 50%;
-            cursor: pointer;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: rgba(10,31,36,0.88);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s;
+            justify-content: space-between;
+            padding: 0 32px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
         }
 
-        .theme-toggle:hover {
-            border-color: var(--accent);
-            transform: rotate(180deg);
-        }
+        [data-theme="light"] nav { background: rgba(232,245,245,0.9); }
 
-        /* HEADER */
-        header {
-            padding: 60px 0 120px;
-            text-align: center;
-            position: relative;
-        }
-
-        .logo {
-            font-size: 24px;
-            letter-spacing: 4px;
+        .nav-logo {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
             color: var(--accent);
-            margin-bottom: 40px;
-            font-weight: 700;
             text-transform: uppercase;
         }
 
-        h1 {
-            font-size: clamp(40px, 8vw, 72px);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.02em;
-        }
+        .nav-right { display: flex; align-items: center; gap: 14px; }
 
-        .subtitle {
-            font-size: 18px;
-            color: var(--text-dim);
-            max-width: 600px;
-            margin: 0 auto 60px;
-        }
-
-        /* SECTIONS GENERAL */
-        section {
-            padding: 80px 0;
-            border-top: 1px solid var(--border);
-        }
-
-        h2 {
-            font-size: 32px;
-            margin-bottom: 24px;
-            letter-spacing: -0.01em;
-        }
-
-        .section-intro {
-            font-size: 16px;
-            color: var(--text-dim);
-            margin-bottom: 60px;
-            max-width: 700px;
-        }
-
-        /* THE PROBLEM */
-        .problem-stat {
-            background: var(--problem-bg);
-            border: 1px solid var(--problem-border);
-            padding: 48px;
-            border-radius: 4px;
-            margin-bottom: 32px;
-        }
-
-        .big-number {
-            font-size: 64px;
-            font-weight: 700;
-            color: #ff3333;
-            margin-bottom: 16px;
-            font-family: -apple-system, sans-serif;
-        }
-
-        /* HOW IT WORKS (FLOW) */
-        .flow {
-            margin: 60px 0;
-        }
-
-        .flow-step {
-            display: grid;
-            grid-template-columns: 60px 1fr;
-            gap: 24px;
-            margin-bottom: 48px;
-            opacity: 0;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            transform: translateY(20px);
-        }
-
-        .flow-number {
-            width: 60px;
-            height: 60px;
-            border: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent);
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .flow-step:not(:last-child) .flow-number::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 48px;
-            background: linear-gradient(to bottom, var(--accent), transparent);
-        }
-
-        .flow-content h3 { font-size: 20px; margin-bottom: 12px; }
-        .flow-content p { font-size: 14px; color: var(--text-dim); }
-
-        .flow-tech {
-            display: inline-block;
-            background: var(--accent-dim);
-            color: var(--accent);
-            padding: 4px 12px;
-            border-radius: 4px;
+        .nav-btn {
             font-size: 12px;
-            margin-top: 12px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        /* CONCEPTS GRID */
-        .concept-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .concept-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 32px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--accent);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 8px 18px;
             border-radius: 4px;
-            transition: all 0.3s;
+            transition: background 0.2s;
         }
 
-        .concept-card:hover {
-            border-color: var(--accent);
-            background: rgba(0, 255, 136, 0.05);
-        }
+        .nav-btn:hover { background: var(--accent-hover); }
 
-        .concept-icon { font-size: 32px; margin-bottom: 16px; }
-
-        /* TECH STACK */
-        .tech-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .tech-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 20px;
+        .theme-btn {
+            width: 32px; height: 32px;
             border-radius: 4px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            transition: border-color 0.2s;
         }
 
-        .tech-label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; margin-bottom: 8px; }
-        .tech-value { color: var(--accent); font-weight: 700; }
+        .theme-btn:hover { border-color: var(--accent); }
 
-        /* WHY SECTION */
-        .why-content { max-width: 740px; }
-        .why-content p { font-size: 16px; margin-bottom: 24px; color: var(--text-dim); }
-        .highlight { color: var(--text); font-weight: 700; }
+        /* LAYOUT */
+        .container { max-width: 880px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
 
-        /* FOOTER */
-        footer {
-            padding: 80px 0 40px;
-            border-top: 1px solid var(--border);
+        /* HERO */
+        header {
+            padding: 180px 0 130px;
             text-align: center;
         }
 
-        .footer-status {
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 32px;
+        }
+
+        .eyebrow-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        h1 {
+            font-size: clamp(56px, 9vw, 104px);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            margin-bottom: 28px;
+            color: var(--text);
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 56px;
+            line-height: 1.7;
+        }
+
+        .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-strong);
+            padding: 16px 32px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* SECTIONS */
+        section { padding: 100px 0; }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
             margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: clamp(36px, 5vw, 60px);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.05;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin-bottom: 60px;
+            line-height: 1.75;
+        }
+
+        /* PROBLEM */
+        .problem-card {
+            background: var(--red-surface);
+            border: 1px solid rgba(224,92,92,0.2);
+            border-radius: 4px;
+            padding: 56px;
+        }
+
+        .problem-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--red);
+            border: 1px solid rgba(224,92,92,0.3);
+            padding: 5px 12px;
+            border-radius: 4px;
+            margin-bottom: 28px;
+        }
+
+        .problem-num {
+            font-size: clamp(72px, 10vw, 110px);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .problem-card p {
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        .problem-card p + p { margin-top: 12px; }
+
+        /* FLOW */
+        .flow { display: flex; flex-direction: column; }
+
+        .flow-item {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 28px;
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .flow-item:first-child { border-top: 1px solid var(--border); }
+        .flow-item.visible { opacity: 1; transform: translateY(0); }
+
+        .flow-num {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            padding-top: 4px;
+        }
+
+        .flow-body h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .flow-body p {
             font-size: 14px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.7;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
+        .tags { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: var(--accent-dim);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        /* FEATURES */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .feature-cell {
+            background: var(--surface);
+            padding: 36px 30px;
+            transition: background 0.2s;
+        }
+
+        .feature-cell:hover { background: var(--surface-2); }
+
+        .feature-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .feature-cell h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-cell p {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* TECH */
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stack-item {
+            background: var(--surface);
+            padding: 24px 28px;
+            transition: background 0.2s;
+        }
+
+        .stack-item:hover { background: var(--surface-2); }
+
+        .stack-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .stack-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+
+        /* BETA FORM */
+        .beta-section { padding: 120px 0; }
+
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 64px 56px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .form-card .section-label { text-align: center; }
+        .form-card h2 { text-align: center; font-size: clamp(32px, 4vw, 44px); margin-bottom: 0; }
+
+        .form-divider {
+            width: 48px; height: 2px;
             background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+            margin: 24px auto 28px;
+            border-radius: 2px;
         }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .form-sub {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            margin-bottom: 40px;
+        }
 
-        footer a { color: var(--accent); text-decoration: none; }
+        .form-group { margin-bottom: 12px; }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .form-group input::placeholder { color: var(--text-tertiary); }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            background: var(--surface-3);
+        }
+
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233d7a82' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-color: var(--surface-2);
+            padding-right: 40px;
+        }
+
+        .form-submit {
+            width: 100%;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 4px;
+            padding: 17px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 8px;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .form-submit:hover { background: var(--accent-hover); }
+        .form-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .form-note {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            margin-top: 16px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* SUCCESS */
+        .form-success { display: none; text-align: center; padding: 24px 0; }
+
+        .success-mark {
+            width: 52px; height: 52px;
+            border: 2px solid var(--green);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 auto 24px;
+            color: var(--green);
+        }
+
+        .form-success h3 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .form-success p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+        .form-success a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+        /* FOOTER */
+        footer { padding: 48px 0; border-top: 1px solid var(--border); }
+
+        .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+
+        .footer-logo {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--text-tertiary);
+        }
+
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2.5s infinite; }
+        .footer-link { font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; }
+        .footer-link:hover { color: var(--accent-hover); }
 
         /* RESPONSIVE */
-        @media (max-width: 768px) {
-            h1 { font-size: 36px; }
-            .flow-step { grid-template-columns: 1fr; }
-            .flow-number::after { display: none; }
+        @media (max-width: 720px) {
+            nav { padding: 0 20px; }
+            .container { padding: 0 20px; }
+            .features-grid, .stack-grid { grid-template-columns: 1fr; }
+            .form-card { padding: 40px 24px; }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+            .problem-card { padding: 36px 28px; }
         }
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
-
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <span id="themeIcon">🌙</span>
-    </button>
+    <nav>
+        <div class="nav-logo">CDCat</div>
+        <div class="nav-right">
+            <button class="nav-btn" onclick="scrollToBeta()">Join Beta</button>
+            <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">☀</button>
+        </div>
+    </nav>
 
     <div class="container">
+
         <header>
-            <div class="logo">CDCAT</div>
-            <h1>Deploy Without Fear.</h1>
-            <p class="subtitle">
-                A deployment platform built on radical transparency. 
-                Flat pricing. Zero egress fees. No surprise bills.
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Building in public · Day 4
+            </div>
+            <h1>Deploy Without<br>Fear.</h1>
+            <p class="hero-sub">
+                Flat pricing. Zero egress fees.<br>No surprise bills. Ever.
             </p>
+            <div class="cta-group">
+                <button class="btn-primary" onclick="scrollToBeta()">Join Beta Waitlist &rarr;</button>
+                <button class="btn-secondary" onclick="document.querySelector('#how').scrollIntoView({behavior:'smooth'})">How it works</button>
+            </div>
         </header>
 
         <section>
-            <h2>The Problem</h2>
-            <p class="section-intro">
-                Current platforms punish success. When your project goes viral, your wallet takes the hit.
-            </p>
-
-            <div class="problem-stat">
-                <div class="big-number">$46,485</div>
-                <p>
-                    A real bill from Vercel for one month of traffic for a simple static site. 
-                    The developer had to shut it down immediately.
-                    <br><br>
-                    Why? Platforms charge $40–150 per every 100GB of bandwidth. 
-                    One front-page appearance on HackerNews can lead to bankruptcy.
-                </p>
+            <div class="section-label">The Problem</div>
+            <h2>Platforms punish<br>your success.</h2>
+            <p class="section-sub">When your project goes viral, your wallet takes the hit. That's not how it should work.</p>
+            <div class="problem-card">
+                <div class="problem-badge">Real Invoice &middot; Vercel</div>
+                <div class="problem-num">$46,485</div>
+                <p>A real bill for one month of traffic for a simple static site. The developer had to shut it down immediately.</p>
+                <p>Platforms charge $40&ndash;150 per 100GB of bandwidth. One front-page appearance on Hacker News can lead to bankruptcy.</p>
             </div>
         </section>
 
-        <section>
-            <h2>How It Works</h2>
+        <section id="how">
+            <div class="section-label">How It Works</div>
+            <h2>Simple, isolated, fast.</h2>
+            <p class="section-sub">Five steps from push to production. No config required.</p>
             <div class="flow">
-                <div class="flow-step">
-                    <div class="flow-number">1</div>
-                    <div class="flow-content">
+                <div class="flow-item">
+                    <div class="flow-num">01</div>
+                    <div class="flow-body">
                         <h3>Connect GitHub</h3>
-                        <p>Push to your repo or paste the URL. We auto-detect your framework (React, Vue, Next.js, Astro).</p>
-                        <span class="flow-tech">GitHub Webhooks</span>
+                        <p>Push to your repo or paste the URL. Auto-detects React, Vue, Next.js, Astro.</p>
+                        <div class="tags"><span class="tag">GitHub Webhooks</span></div>
                     </div>
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">2</div>
-                    <div class="flow-content">
+                <div class="flow-item">
+                    <div class="flow-num">02</div>
+                    <div class="flow-body">
                         <h3>Isolated Build</h3>
                         <p>Each build runs in a dedicated Docker container on our VPS. Your code never touches anyone else's state.</p>
-                        <span class="flow-tech">Docker</span>
-                        <span class="flow-tech">VPS Isolation</span>
+                        <div class="tags"><span class="tag">Docker</span><span class="tag">VPS Isolation</span></div>
                     </div>
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">3</div>
-                    <div class="flow-content">
+                <div class="flow-item">
+                    <div class="flow-num">03</div>
+                    <div class="flow-body">
                         <h3>Upload to R2</h3>
-                        <p>Built files are uploaded to Cloudflare R2. $0 egress fees is the key to our flat pricing model.</p>
-                        <span class="flow-tech">Cloudflare R2</span>
+                        <p>Built files go to Cloudflare R2. Zero egress fees &mdash; the key to our flat pricing model.</p>
+                        <div class="tags"><span class="tag">Cloudflare R2</span></div>
                     </div>
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">4</div>
-                    <div class="flow-content">
+                <div class="flow-item">
+                    <div class="flow-num">04</div>
+                    <div class="flow-body">
                         <h3>Edge Serving</h3>
-                        <p>Your site is served via Cloudflare Workers from 300+ edge locations. Sub-50ms latency globally.</p>
-                        <span class="flow-tech">Edge Workers</span>
+                        <p>Served via Cloudflare Workers from 300+ edge locations. Sub-50ms latency globally.</p>
+                        <div class="tags"><span class="tag">Edge Workers</span><span class="tag">CDN</span></div>
                     </div>
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">5</div>
-                    <div class="flow-content">
+                <div class="flow-item">
+                    <div class="flow-num">05</div>
+                    <div class="flow-body">
                         <h3>Sleep Peacefully</h3>
-                        <p>Bandwidth is free. Your bill remains exactly what you signed up for, even if you hit the front page of Product Hunt.</p>
+                        <p>Bandwidth is free. Your bill stays exactly what you signed up for &mdash; even if you hit the front page of Product Hunt.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section>
-            <h2>Core Concepts</h2>
-            <div class="concept-grid">
-                <div class="concept-card">
-                    <div class="concept-icon">🔒</div>
+            <div class="section-label">Core Concepts</div>
+            <h2>Radical transparency,<br>by design.</h2>
+            <p class="section-sub">Every decision traces back to one principle: no surprises.</p>
+            <div class="features-grid">
+                <div class="feature-cell">
+                    <div class="feature-label">01</div>
                     <h3>Isolation</h3>
-                    <p>No shared state. A fresh, ephemeral container for every single build.</p>
+                    <p>Fresh, ephemeral container for every single build. No shared state.</p>
                 </div>
-                <div class="concept-card">
-                    <div class="concept-icon">💰</div>
+                <div class="feature-cell">
+                    <div class="feature-label">02</div>
                     <h3>Flat Pricing</h3>
-                    <p>No hidden metrics. You pay a fixed monthly amount. Success doesn't cost extra.</p>
+                    <p>Fixed monthly amount. No hidden metrics. Success doesn&rsquo;t cost extra.</p>
                 </div>
-                <div class="concept-card">
-                    <div class="concept-icon">🌍</div>
+                <div class="feature-cell">
+                    <div class="feature-label">03</div>
                     <h3>Zero Egress</h3>
-                    <p>Cloudflare R2 doesn't charge for data transfer out. We pass that savings to you.</p>
+                    <p>R2 doesn&rsquo;t charge for data transfer out. We pass those savings to you.</p>
                 </div>
-                <div class="concept-card">
-                    <div class="concept-icon">⚡</div>
+                <div class="feature-cell">
+                    <div class="feature-label">04</div>
                     <h3>Edge Native</h3>
-                    <p>Your site lives at the edge of the network, as close to your users as possible.</p>
+                    <p>Your site lives at the edge, as close to your users as possible.</p>
                 </div>
-                <div class="concept-card">
-                    <div class="concept-icon">🔓</div>
+                <div class="feature-cell">
+                    <div class="feature-label">05</div>
                     <h3>No Lock-In</h3>
-                    <p>Data stays in S3-compatible storage. You can migrate away with a single API call.</p>
+                    <p>S3-compatible storage. Migrate away with a single API call.</p>
                 </div>
-                <div class="concept-card">
-                    <div class="concept-icon">📊</div>
+                <div class="feature-cell">
+                    <div class="feature-label">06</div>
                     <h3>Transparent</h3>
-                    <p>Open-source core with honest statistics for every build and request.</p>
+                    <p>Open-source core. Honest statistics for every build and request.</p>
                 </div>
             </div>
         </section>
 
         <section>
-            <h2>Tech Stack</h2>
-            <div class="tech-list">
-                <div class="tech-item"><div class="tech-label">Backend</div><div class="tech-value">Go (Golang)</div></div>
-                <div class="tech-item"><div class="tech-label">Runner</div><div class="tech-value">Docker</div></div>
-                <div class="tech-item"><div class="tech-label">Storage</div><div class="tech-value">Cloudflare R2</div></div>
-                <div class="tech-item"><div class="tech-label">Network</div><div class="tech-value">Workers / CDN</div></div>
-                <div class="tech-item"><div class="tech-label">Database</div><div class="tech-value">PostgreSQL</div></div>
-                <div class="tech-item"><div class="tech-label">Infra</div><div class="tech-value">Bare Metal VPS</div></div>
+            <div class="section-label">Tech Stack</div>
+            <h2>Boring, reliable, fast.</h2>
+            <p class="section-sub">No hype. Just the right tools for the job.</p>
+            <div class="stack-grid">
+                <div class="stack-item"><div class="stack-label">Backend</div><div class="stack-value">Go (Golang)</div></div>
+                <div class="stack-item"><div class="stack-label">Build Runner</div><div class="stack-value">Docker</div></div>
+                <div class="stack-item"><div class="stack-label">Storage</div><div class="stack-value">Cloudflare R2</div></div>
+                <div class="stack-item"><div class="stack-label">Network</div><div class="stack-value">Workers / CDN</div></div>
+                <div class="stack-item"><div class="stack-label">Database</div><div class="stack-value">PostgreSQL</div></div>
+                <div class="stack-item"><div class="stack-label">Infra</div><div class="stack-value">Bare Metal VPS</div></div>
             </div>
         </section>
 
-        <section>
-            <h2>Why CDCat?</h2>
-            <div class="why-content">
-                <p>Platforms like Vercel and Netlify are <span class="highlight">fantastic for prototypes</span>. But they are built on a <span class="highlight">"bandwidth trap"</span>: they hook you with a free tier and then charge exponentially when you scale.</p>
-                <p><span class="highlight">We are indie developers too.</span> We've seen projects die because of surprise bills. CDCat exists so you can focus on building, not worrying about viral success.</p>
-                <p>No hidden fees. Just code and stability. Built on boring, reliable, and high-performance technologies.</p>
-            </div>
-        </section>
+    </div>
 
+    <!-- BETA FORM -->
+    <section class="beta-section" id="beta">
+        <div class="container">
+            <div class="form-card">
+                <div class="section-label">Early Access</div>
+                <h2>Join the Beta</h2>
+                <div class="form-divider"></div>
+                <p class="form-sub">We&rsquo;re onboarding the first 100 developers manually.<br>Leave your email &mdash; we&rsquo;ll reach out personally.</p>
+
+                <div id="betaForm">
+                    <form
+                        action="https://formspree.io/f/mpqjnylp"
+                        method="POST"
+                        id="formspreeForm"
+                        onsubmit="handleSubmit(event)"
+                    >
+                        <div class="form-group">
+                            <input type="email" name="email" id="emailInput" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="project" placeholder="What are you building? (optional)">
+                        </div>
+                        <div class="form-group">
+                            <select name="stack">
+                                <option value="" disabled selected>Your main stack</option>
+                                <option value="nextjs">Next.js</option>
+                                <option value="react">React / Vite</option>
+                                <option value="vue">Vue / Nuxt</option>
+                                <option value="astro">Astro</option>
+                                <option value="svelte">SvelteKit</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="form-submit" id="submitBtn">
+                            Request Early Access
+                        </button>
+                        <p class="form-note">No spam. We&rsquo;ll write personally when your spot is ready. Launch Q2 2026.</p>
+                    </form>
+                </div>
+
+                <div class="form-success" id="formSuccess">
+                    <div class="success-mark">&#10003;</div>
+                    <h3>You&rsquo;re on the list.</h3>
+                    <p>
+                        We&rsquo;ll reach out personally when your spot is ready.<br>
+                        Follow <a href="https://x.com/vibecotan" target="_blank">@vibecotan</a> for updates.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
         <footer>
-            <div class="footer-status">
-                <span class="status-dot"></span>
-                <span>Building in public</span>
+            <div class="footer-inner">
+                <div class="footer-logo">CDCat</div>
+                <div class="footer-status">
+                    <span class="status-dot"></span>
+                    Building in public &middot; Day 4 &middot; Launch Q2 2026
+                </div>
+                <a href="https://x.com/vibecotan" target="_blank" class="footer-link">@vibecotan</a>
             </div>
-            <p>Day 4 of development. Launch Q2 2026.</p>
-            <p style="margin-top: 16px;">
-                Built by <a href="https://x.com/vibecotan" target="_blank">@vibecotan</a>
-            </p>
         </footer>
     </div>
 
     <script>
-        // THEME LOGIC
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
         const html = document.documentElement;
+        const btn = document.getElementById('themeBtn');
 
-        const setTheme = (theme) => {
-            html.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        const setTheme = t => {
+            html.setAttribute('data-theme', t);
+            localStorage.setItem('cdcat-theme', t);
+            btn.textContent = t === 'dark' ? '\u2600' : '\u263D';
         };
 
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        setTheme(currentTheme);
+        setTheme(localStorage.getItem('cdcat-theme') || 'dark');
+        btn.onclick = () => setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 
-        themeToggle.addEventListener('click', () => {
-            const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
+        window.addEventListener('scroll', () => {
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            document.querySelector('nav').style.background = scrollY > 20
+                ? (isDark ? 'rgba(10,31,36,0.96)' : 'rgba(232,245,245,0.96)')
+                : '';
         });
 
-        // SCROLL ANIMATION
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.08 });
 
-        document.querySelectorAll('.flow-step').forEach(step => observer.observe(step));
+        document.querySelectorAll('.flow-item').forEach((el, i) => {
+            el.style.transitionDelay = (i * 0.07) + 's';
+            observer.observe(el);
+        });
+
+        function scrollToBeta() {
+            document.getElementById('beta').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => document.getElementById('emailInput').focus(), 600);
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            try {
+                const form = document.getElementById('formspreeForm');
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: new FormData(form)
+                });
+
+                if (res.ok) {
+                    document.getElementById('betaForm').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Try again';
+            }
+        }
     </script>
 </body>
 </html>
